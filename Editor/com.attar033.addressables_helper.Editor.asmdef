@@ -1,0 +1,14 @@
+{
+	"name": "com.attar033.addressables_helper.editor",
+    "references": [
+        "Unity.Addressables.Editor",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}

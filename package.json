@@ -1,0 +1,21 @@
+{
+  "name": "com.attar033.addressables_helper",
+  "displayName": "Addressables Helper",
+  "author": {
+    "name": "Bobby, Inc.",
+    "url": "http://www.google.com"
+  },
+  "version": "1.0.1",
+  "unity": "2021.3",
+  "description": "Addressables helper",
+  "keywords": [
+    "Addressables"
+  ],
+  "license": "MIT",
+  "category": "Task",
+  "unityRelease": "17f1",
+  "dependencies": {
+    "com.unity.addressables": "1.19.19",
+    "com.cysharp.unitask": "1.19.19"
+  }
+}
