@@ -5,7 +5,7 @@ using UnityEditor;
 using System.Linq;
 using System.IO;
 
-public class BuildLauncherEditorWindow : EditorWindow
+public class AddressablesBuilderEditorWindow : EditorWindow
 {
     public bool IsBuildingAddressables
     {
@@ -35,7 +35,7 @@ public class BuildLauncherEditorWindow : EditorWindow
     static void Init()
     {
         // Get existing open window or if none, make a new one:
-        var window = (BuildLauncherEditorWindow)EditorWindow.GetWindow(typeof(BuildLauncherEditorWindow));
+        var window = (AddressablesBuilderEditorWindow)EditorWindow.GetWindow(typeof(AddressablesBuilderEditorWindow));
         window.Show();
     }
 
@@ -115,26 +115,6 @@ public class BuildLauncherEditorWindow : EditorWindow
         }
 
     }
-
-    // private void LogCachedBundles()
-    // {
-    //     var cachePaths = new List<string>();
-    //     Caching.GetAllCachePaths(cachePaths);
-    //     var cachedBundles = cachePaths.Where(Directory.Exists).SelectMany(path => Directory.EnumerateFileSystemEntries(path));
-    //     Debug.Log(cachedBundles.Count());
-    //     foreach (var path in cachedBundles) {
-    //         var cachedBundleName = Path.GetFileName(path);
-    //         Debug.Log((cachedBundleName));
-    //         // if (!string.IsNullOrEmpty(cachedBundleName)) {
-    //         //     var cachedBundleVersions = new List<Hash128>();
-    //         //     Caching.GetCachedVersions(cachedBundleName, cachedBundleVersions);
-    //         //     foreach (var ver in cachedBundleVersions) {
-    //         //         Debug.Log(cachedBundleName + "  " + ver);
-    //         //         //Caching.ClearCachedVersion(cachedBundleName, ver);
-    //         //     }
-    //         // }
-    //     }
-    // }
 
     private bool IsValidOptionSelection()
     {

@@ -222,7 +222,7 @@ public class AddressablesBuildLauncher : UnityEditor.Build.IActiveBuildTargetCha
             }
         }
 
-        var s = (BuildLauncherEditorWindow)EditorWindow.GetWindow(typeof(BuildLauncherEditorWindow));
+        var s = (AddressablesBuilderEditorWindow)EditorWindow.GetWindow(typeof(AddressablesBuilderEditorWindow));
         if(s!=null)
         {
             s.Next();
