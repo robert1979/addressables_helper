@@ -2,10 +2,23 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using System.Linq;
+using System.IO;
 
 public class BuildLauncherEditorWindow : EditorWindow
 {
+    public bool IsBuildingAddressables
+    {
+        get
+        {
+            return EditorPrefs.GetBool("EAddressBuildFlag", false);
+        }
+        set
+        {
+            EditorPrefs.SetBool("EAddressBuildFlag", value);
+        }
+    }
+    
     public OperationQueue OpQueue
     {
         get{
@@ -18,7 +31,7 @@ public class BuildLauncherEditorWindow : EditorWindow
         }
     }
 
-    [MenuItem("Addressables/Build Launcher")]
+    [MenuItem("Building/Build Content...")]
     static void Init()
     {
         // Get existing open window or if none, make a new one:
@@ -34,6 +47,12 @@ public class BuildLauncherEditorWindow : EditorWindow
     void OnGUI()
     {
         GUILayout.BeginVertical();
+
+        if (GUILayout.Button("Clear cache"))
+        {
+            UnityEngine.Caching.ClearCache();
+        }
+        
         GUILayout.Label("Select Platforms", EditorStyles.boldLabel);
 
         if(selectedPlatforms==null)
@@ -62,6 +81,7 @@ public class BuildLauncherEditorWindow : EditorWindow
         for (int i = 0; i < platforms.Length; i++)
             if(selectedPlatforms[i])    buildNames += platforms[i].ToString() + " ";
 
+        bool scheduleBuild = false; //required to avoid EndLayout GUI error
         if(GUILayout.Button(title, GUILayout.Width(100)))
         {
             if(EditorUtility.DisplayDialog("Start " + title,$"Start {title} for {buildNames}","Yes","No"))
@@ -78,7 +98,7 @@ public class BuildLauncherEditorWindow : EditorWindow
                     }
                 }
                 OpQueue =   new OperationQueue(){ operations = queue};
-                Next();
+                scheduleBuild = true;
             }
         }
         GUI.enabled=false;
@@ -87,7 +107,34 @@ public class BuildLauncherEditorWindow : EditorWindow
         GUILayout.Space(20);
         GUILayout.EndVertical();
 
+        if (scheduleBuild)
+        {
+            scheduleBuild = false;
+            IsBuildingAddressables = true;
+            Next();
+        }
+
     }
+
+    // private void LogCachedBundles()
+    // {
+    //     var cachePaths = new List<string>();
+    //     Caching.GetAllCachePaths(cachePaths);
+    //     var cachedBundles = cachePaths.Where(Directory.Exists).SelectMany(path => Directory.EnumerateFileSystemEntries(path));
+    //     Debug.Log(cachedBundles.Count());
+    //     foreach (var path in cachedBundles) {
+    //         var cachedBundleName = Path.GetFileName(path);
+    //         Debug.Log((cachedBundleName));
+    //         // if (!string.IsNullOrEmpty(cachedBundleName)) {
+    //         //     var cachedBundleVersions = new List<Hash128>();
+    //         //     Caching.GetCachedVersions(cachedBundleName, cachedBundleVersions);
+    //         //     foreach (var ver in cachedBundleVersions) {
+    //         //         Debug.Log(cachedBundleName + "  " + ver);
+    //         //         //Caching.ClearCachedVersion(cachedBundleName, ver);
+    //         //     }
+    //         // }
+    //     }
+    // }
 
     private bool IsValidOptionSelection()
     {
@@ -124,9 +171,13 @@ public class BuildLauncherEditorWindow : EditorWindow
         }
         else
         {
-            var runtimePlatform = Application.platform== RuntimePlatform.OSXEditor?BuildTarget.StandaloneOSX:BuildTarget.StandaloneWindows;
-            Debug.Log("Reverting back to runtime platform");
-            EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Standalone, runtimePlatform);
+            if (IsBuildingAddressables)
+            {
+                var runtimePlatform = Application.platform== RuntimePlatform.OSXEditor?BuildTarget.StandaloneOSX:BuildTarget.StandaloneWindows;
+                Debug.Log("Reverting back to runtime platform");
+                EditorUserBuildSettings.SwitchActiveBuildTargetAsync(BuildTargetGroup.Standalone, runtimePlatform);
+                IsBuildingAddressables = false;
+            }
         }
     }
 }

@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.AddressableAssets.Build;
 using UnityEditor.AddressableAssets.Settings;
@@ -134,12 +135,13 @@ public class AddressablesBuildLauncher : UnityEditor.Build.IActiveBuildTargetCha
         }
 
         IDataBuilder builderScript = AssetDatabase.LoadAssetAtPath<ScriptableObject>(build_script) as IDataBuilder;
-
+        
         if (builderScript == null) {
             Debug.LogError(build_script + " couldn't be found or isn't a build script.");
             return false;
         }
 
+        builderScript.ClearCachedData();
         AddressableAssetSettings.CleanPlayerContent(builderScript);
         SetBuilder(builderScript);
 
@@ -158,12 +160,13 @@ public class AddressablesBuildLauncher : UnityEditor.Build.IActiveBuildTargetCha
         SetProfile(profile_name);
 
         IDataBuilder builderScript = AssetDatabase.LoadAssetAtPath<ScriptableObject>(build_script) as IDataBuilder;
-
+        
         if (builderScript == null) {
             Debug.LogError(build_script + " couldn't be found or isn't a build script.");
             return false;
         }
 
+        builderScript.ClearCachedData();
         AddressableAssetSettings.CleanPlayerContent(builderScript);
         SetBuilder(builderScript);
 
@@ -196,9 +199,9 @@ public class AddressablesBuildLauncher : UnityEditor.Build.IActiveBuildTargetCha
         BuildTargetChanged(newTarget);
     }
 
+    // ReSharper disable Unity.PerformanceAnalysis
     public async static void BuildTargetChanged(BuildTarget newTarget)
     {
-        Debug.Log(newTarget);
         if(NextAddressableOperation == AddressableOperation.CleanBuild) //change this to a queued process name so we can start a new build or just an updae
         {
             NextAddressableOperation = AddressableOperation.None;
@@ -226,3 +229,4 @@ public class AddressablesBuildLauncher : UnityEditor.Build.IActiveBuildTargetCha
         }
     }
 }
+#endif
